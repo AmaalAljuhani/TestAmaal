@@ -1,151 +1,79 @@
- var cocItemListName = 'COCItemsList';
+<div id="dvReviewPatientDetails">
 
-$(document).ready(function () {
-    ShowFullPage();
-});
-  var chunk_size = 10;
-    var pageNo = 0;
-function GetResult() {
-	
-    if ($("#txtSearchValue").val()) {
-      
-        var searchValue = $("#txtSearchValue").val();
-        var camlQuery = '';
-        switch ($('input[name=cocSearchOption]:checked').val()) {
-case 'Mobile':
-            	var othersearchValue = ''
-            	if(searchValue.charAt(0)=="0")
-            	{
-            		othersearchValue = '966'+searchValue.substring(1)
-            			camlQuery = "Mobile eq "+othersearchValue+"";
-            	}
-				
-             else if(searchValue.substring(0,3)=="966")
-            	{
-            		othersearchValue = '0'+searchValue.substring(3)
-            		   camlQuery = "Mobile  eq "+searchValue+"";
-					}
-                 
-           
-				else if(searchValue =="977")
-				{
-					camlQuery = "Mobile eq "+searchValuee+"";
-					}
-				
-               
-			 
-			   break;
-            case 'COCID':
-                camlQuery = "COCID eq "+searchValue+"";
-				
-                break;
-            case 'ItemID':
-                camlQuery = "Id eq "+searchValue+"";
-				
-                break;
-             case 'PatientID':
-                camlQuery ="PatientID eq "+searchValue+"";
-				
-                break;
+        <div class="container">
+            <div class="title">
+                <h3><i class="fa fa-bell-o"></i><span id="wspSearchTitle">Search Form</span></h3>
+            </div>
+
+            <div class="condi" style="padding-bottom: 20px">
+                <!-- start accourdion -->
+                <div class="toggli">
+                    <div id="panelContent" class="panel-group" role="tablist" aria-multiselectable="true">
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Search Area
+                                    <i class="fa fa-minus"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <div class="panel nasaeh">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <div class="form-group marginLeft">
+                                                    <label class="control-label col-sm-4" id="Label3" for="pwd">Filter Type</label>
+                                                    <div class="col-sm-6">
+                                                        <div id="dvCOCFormRadioOption">
+                                                           <input type="radio" class="cocType" onchange="clearSearchValue();" checked="checked" name="cocSearchOption" value="Mobile">By Mobile Number
+                                                          <input type="radio" class="cocType" onchange="clearSearchValue();" name="cocSearchOption" value="ItemID">By Item ID
+                                                          <input type="radio" class="cocType" onchange="clearSearchValue();" name="cocSearchOption" value="COCID">By COC ID
+                                                          <input type="radio" class="cocType" onchange="clearSearchValue();" name="cocSearchOption" value="PatientID">By Patient ID
+                                                          
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="form-group marginLeft">
+                                                    <label class="control-label col-sm-4" for="pwd">Value</label>
+                                                    <label class="staric" style="color: #f00; font-size: 36px !important">*</label>
+                                                    <div class="col-sm-6">
+                                                        
+                                                        <input type="text" class="pull-right seler form-control" onkeypress="return CheckNumeric(event);" id="txtSearchValue">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="inne">
+                                        <input type="button" id="btnViewResult" class="morea pull-right" value="Search" onclick="GetResult()">
+                                        <input type="button" id="btnClear" class="morea pull-right" value="Clear" onclick="ClearSearchFields()">
+                                    </div>
+                                </div>
+                            </div>
 
 
-        }
- 
-            $.ajax({
-                          url:_spPageContextInfo.siteAbsoluteUrl + "/_api/web/lists/getbytitle('" + cocItemListName + "')/items?$filter="+camlQuery+"", 
-                method: "GET",
-                headers: { "Accept": "application/json; odata=verbose" },
-                success: function (data) {
-					
-           tableinfo(data);
-},
-                  error: function (data) {
-                    alert("No Item found");
-                }
-                
-                });
-            }
-			
-	 else {
-        alert('Please fill search values');
-    }
-}
-			function tableinfo(data){
-				
-            $("#ulResultItems").empty();
-				     var index = 0;
-			 var ItemID= data.d.results[0].ID; 
-			  var COCID= data.d.results[0].COCID;
-			   var Title= data.d.results[0].Title;
-			     var Project= data.d.results[0].Project;
-				  var COCTypeNam= data.d.results[0].COCTypeName;
-				   var Nature= data.d.results[0].NatureName;
-				    var Status= data.d.results[0].Status;
-				
-			     var cehckNewPage = index % chunk_size === 0;
-                    if (index == 0 || cehckNewPage == true) {
-						      pageNo++;
-  var liHtml = "<li >" +
-				 "<div class='table-responsive'>" +
-                                               "<table class='table table-bordered sharee table-hover'>" +
-                                                   "<thead>" +
-                                                       "<tr>" +
-                                                           "<th>Item ID</th>" +
-                                                           "<th>COC ID</th>" +
-                                                           "<th>Title</th>" +
-														  "<th>Project Name</th>" +
-									                     "<th>form Type</th>" +
-														 "<th>Nature Type</th>" +
-                                                          "<th>Status</th>" +
-                                                          "<th>Preview</th>" +
-                                                        "</tr>" +
-                                                    "</thead>" +
-                                                    "<tbody id='bodyContact" + pageNo + "'>";
-
-                        $("#ulResultItems").append(liHtml);
-					}
-				     var preview;
-   
-                   preview =  "http://gate.com/coc/EN/Pages/COCSearchDetails.aspx?itemID="+ItemID;
-
-                    var liHtml = "<tr>" +
-                                                      "<td>" + ItemID + "</td>" +
-                                                     "<td>" + COCID + "</td>" +
-                                                      "<td>" + Title + "</td>" +
-                                                       "<td>" + Project + "</td>" +
-													     "<td>" +  COCTypeNam + "</td>" +
-														   "<td>" + Nature + "</td>" +
-														     "<td>" + Status + "</td>" +
-                                                        //"<td>" + GetDisplayStatus(cocStatus) + "</td>" +
-                                                       "<td><a   href=\"" + preview + "\"  >" + Res.clickHere + "</a></td>" +
-                                                  "</tr>";
-                      $("#bodyContact" + pageNo).append(liHtml);
-
-                       index++;
-                    if (cehckNewPage == true) {
-                        var liHtml = "</tbody>" +
-                                  "</table>" +
-                                  "</div>" +
-                                  "</li>";
-
-                        $("#ulResultItems").append(liHtml);
-
-                    }
-          /*     
-                pagingTableDrawWithoutDelay("ulResultItems", "dvPaging");
-                // $("#itemContainer1").attr('style', 'display:block');
-                $("#dvContainer").attr('style', 'visibility: visible');
-                $("#ulResultItems").attr('style', 'visibility: visible');
-                $("#imgLoading").attr('style', 'display:none');
+                        </div>
+                    </div>
+                </div>
+                <!-- end toggli -->
+                <!-- end it right here -->
+            </div>
             
-            */
-			}
-			
-			function ClearSearchFields() {
-    $('input[name=cocSearchOption][value=Mobile]').prop("checked", true);
-    $("#txtSearchValue").val("");
-}
-			
-			function clearSearchValue() {
-    $("#txtSearchValue").val("");
-}
+            <div style="visibility: hidden" id="dvContainer">
+                <ul id="ulResultItems" style="visibility: hidden">
+                </ul>
+                <nav id="navPage" class="text-center">
+                    <ul class="pagination">
+                        <div id="dvPaging" class="holder">
+                            <li></li>
+                        </div>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
